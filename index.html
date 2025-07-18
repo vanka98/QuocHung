@@ -1,0 +1,741 @@
+<!DOCTYPE html>  <html lang="vi">  
+<head>  
+  <meta charset="UTF-8" />  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>  
+  <title>FF TH - FF MAX </title>    <!-- Thư viện mã hóa AES -->    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+  <style>	  
+.avatar-glow {  
+  position: fixed;  
+  top: 12px;  
+  right: 12px;  
+  width: 58px;     /* 👈 Giảm từ 60px */  
+  height: 58px;  
+  border-radius: 50%;  
+  z-index: 1000;  
+}  .avatar {
+width: 100%;
+height: 100%;
+border-radius: 50%;
+object-fit: cover;
+position: relative;
+z-index: 2;
+}
+
+.glow-ring {
+position: absolute;
+top: -4px;
+left: -4px;
+width: 58px;     /* 👈 Giảm từ 68px */
+height: 58px;
+border-radius: 50%;
+background: conic-gradient(
+from 0deg,
+#ff0000,
+#ffff00,
+#00ff00,
+#00ffff,
+#0000ff,
+#ff00ff,
+#ff0000
+);
+animation: spin 3s linear infinite;
+z-index: 1;
+filter: blur(4px);
+}
+
+@keyframes spin {
+from { transform: rotate(0deg); }
+to   { transform: rotate(360deg); }
+}
+:root {
+--main-color: #06b6d4;
+--secondary-color: #4f46e5;
+--bg-dark: #0f1115;
+--bg-light: #1f2937;
+--text-light: #eee;
+--accent: #facc15;
+}
+* { box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+body {
+background: url("https://inkythuatso.com/uploads/thumbnails/800/2022/03/anh-dai-dien-facebook-mau-den-1-29-11-34-09.jpg") no-repeat center center fixed;
+background-size: cover;
+color: var(--text-light);
+}
+header {
+font-size: 40px;
+font-weight: bold;
+text-align: center;
+margin-top: 50px;
+background: linear-gradient(90deg, #ffffff, #ff00cc, #00ffff, #ffffff);
+background-size: 200% auto;
+color: transparent;
+background-clip: text;
+-webkit-background-clip: text;
+animation: shine 3s linear infinite;
+}
+@keyframes shine {
+0% {
+background-position: 200% center;
+}
+100% {
+background-position: -200% center;
+}
+}
+nav {
+display: flex;
+overflow-x: auto;
+background: var(--bg-light);
+border-bottom: 2px solid var(--main-color);
+}
+nav button {
+flex: 1;
+padding: 1rem;
+background: none;
+border: none;
+color: #aaa;
+font-weight: bold;
+cursor: pointer;
+transition: 0.2s ease;
+}
+nav button:hover, nav button.active {
+color: var(--accent);
+border-bottom: 3px solid var(--accent);
+}
+.panel {
+display: none;
+padding: 1rem;
+animation: fadeIn 0.3s ease;
+}
+.panel.active {
+display: block;
+}
+label {
+display: block;
+margin: 0.75rem 0;
+}
+.slider-group {
+margin: 1rem 0;
+}
+.save-btn {
+display: block;
+margin: 2rem auto;
+padding: 0.75rem 1.5rem;
+background: var(--main-color);
+color: white;
+font-weight: bold;
+border: none;
+border-radius: 8px;
+cursor: pointer;
+box-shadow: 0 4px 6px rgba(0,0,0,0.4);
+transition: background 0.3s ease;
+}
+.save-btn:hover {
+background: #0891b2;
+}
+@keyframes fadeIn {
+from {opacity: 0;}
+to {opacity: 1;}
+}
+</style>
+
+</head>  
+<body>   
+ <header>✨Quốc Hưng✨</header>    
+<nav>  
+    <button class="tab-btn" onclick="switchTab('sensitivity')">📡 Sensitivity</button>  
+    <button class="tab-btn active" onclick="switchTab('AimLock')">🎯 AimLock</button>  
+    <button class="tab-btn" onclick="switchTab('performance')">⚙️ Performance</button>  
+    <button class="tab-btn" onclick="switchTab('gun')">🌈 GUN</button>  
+    <button class="tab-btn" onclick="switchTab('recoil')">🔒 RECOIL</button>  
+        
+  </nav>  
+<!-- SENSITIVITY -->
+    <section id="sensitivity" class="panel">  
+    <div class="slider-group">  
+  <label>Global Sensitivity: <span id="globalVal">1.20</span></label>  
+  <input type="range" id="globalSensitivity" min="1.0" max="2.0" step="0.01" value="1.20"   
+         oninput="document.getElementById('globalVal').innerText = this.value" />  
+</div>  <div class="slider-group">  
+  <label>ADS Value: <span id="adsVal">1.30</span></label>  
+  <input type="range" id="adsValue" min="1.0" max="2.0" step="0.01" value="1.30"   
+         oninput="document.getElementById('adsVal').innerText = this.value" />  
+</div>  <div class="slider-group">  
+  <label>Vertical Sensitivity: <span id="verticalVal">1.38</span></label>  
+  <input type="range" id="verticalSensitivity" min="1.0" max="2.0" step="0.01" value="1.38"   
+         oninput="document.getElementById('verticalVal').innerText = this.value" />  
+</div>  <div class="slider-group">  
+  <label>Horizontal Sensitivity: <span id="horizontalVal">1.32</span></label>  
+  <input type="range" id="horizontalSensitivity" min="1.0" max="2.0" step="0.01" value="1.32"   
+         oninput="document.getElementById('horizontalVal').innerText = this.value" />  
+</div>  
+    <label><input type="checkbox" id="nt1"> Nhẹ Tâm 1 (Ổn định, giữ tâm bắn không lệch)</label>  
+    <label><input type="checkbox" id="nt2"> Nhẹ Tâm 2 (Giữ tâm chính giữa, tracking mục tiêu)</label>  
+    <label><input type="checkbox" id="nt3"> Nhẹ Tâm 3 (lọc tâm, giảm trễ, giảm ma sát drag, tối ưu reticle)</label>  
+    <label><input type="checkbox" id="nt4"> Sensitivity ( Điều chỉnh độ nhạy cảm ứng và cử chỉ )</label>  
+    <label><input type="checkbox" id="nt5"> Buff Màn ( Điều chỉnh Độ Làm Tươi )</label>  
+        <label><input type="checkbox" id="nt6"> Tăng Nhạy ( Tăng Độ Nhạy Cảm Ứng Tổng Thể ) </label>  
+  </section>    
+<!-- AIM -->    
+<section id="AimLock" class="panel active">  
+    <label><input type="checkbox" id="AML">UltimateAimlockSystem (Tự động khóa mục tiêu & tracking)</label>  
+    <label><input type="checkbox" id="AML1"> AimLock (Nhắm và Khóa Mục Tiêu)</label>  
+    <label><input type="checkbox" id="AML2"> Tracking & Prediction (Theo Dõi và Dự Đoán)</label>  
+    <label><input type="checkbox" id="AML3"> HeadAim (Bám Đầu Mọi Khoảng Cách)</label>  
+    <label><input type="checkbox" id="AML4"> Ghìm tâm (giúp giữ tâm ngắm ổn định khi bắn)</label>  
+    <label><input type="checkbox" id="AML5"> Aim Precision & Smoothing (Độ Chính Xác và Mượt Mà)</label>  
+
+  </section>    
+<!-- PERFORMANCE -->    
+<section id="performance" class="panel">  
+    <label><input type="checkbox" id="pe"> CPU & Power Management (Tăng Tốc CPU)</label>  
+    <label><input type="checkbox" id="pe1"> RAM & Memory Management (Giải Phóng Ram)</label>  
+    <label><input type="checkbox" id="pe2"> GPU & Display (Tăng Hiệu Suất GPU)</label>  
+    <label><input type="checkbox" id="pe3"> Cache & Storage(Dọn Dẹp Ram)</label>  
+     <label><input type="checkbox" id="pe4"> Tăng Tác Dụng AimLock</label>  
+     <label><input type="checkbox" id="pe5"> Tăng Tác Dụng Sensi</label>  
+  </section>    
+<!-- VISUAL -->    
+<section id="gun" class="panel">  
+    <label><input type="checkbox" id="m1887"> M1887</label>  
+    <label><input type="checkbox" id="mp"> Mp40</label>  
+    <label><input type="checkbox" id="ump"> Ump</label>  
+    <label><input type="checkbox" id="de"> Desert Eagle</label>  
+  </section>
+  
+    <!-- BOOST -->
+    <section id="recoil" class="panel">  
+    <label><input type="checkbox" id="recoil"> Fix Rung (Giảm Độ Giật Tâm Súng)</label>  
+    <label><input type="checkbox" id="recoi1"> Fix Spam(An toàn, nhẹ, mượt – phù hợp các máy)</label>  
+    <label><input type="checkbox" id="pe8"> Fix Delay (Giảm Độ Trễ Khi Tap)</label>  
+    <label><input type="checkbox" id="anew"> Fix Lố (Tránh Tình Trạng Tâm Quá Đầu)</label>  
+    <label><input type="checkbox" id="ahz"> Fix Rung Màn ( Tránh Màn Bị Giật )</label>  
+    <label><input type="checkbox" id="abz"> Giật Dọc (Vertical)</label>  
+    <label><input type="checkbox" id="abs"> Giật Ngang (Horizontal)</label>  
+    <label><input type="checkbox" id="azh"> Giật Ngẫu Nhiên / Tích Lũy</label>  
+  </section>
+    <!-- SAVE BUTTON -->
+  <button class="save-btn" onclick="saveConfig()">💾 Lưu File Cấu Hình</button>
+  
+    <!-- SCRIPT -->
+    <script>
+  function switchTab(id) {
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    event.target.classList.add('active');
+  }
+  
+    function saveConfig() {  
+      const cfg = [];  
+      const add = (v) => cfg.push(v);  
+              
+      add(`global=${globalSensitivity.value}`);  
+      add(`ads_value=${adsValue.value}`);  
+      add(`vertical=${verticalSensitivity.value}`);  
+      add(`horizontal=${horizontalSensitivity.value}`);     
+      if (nt1.checked) add("Stability Control=1");  
+      if (nt1.checked) add("Balance=1");  
+      if (nt1.checked) add("Recoil Anchor");  
+      if (nt1.checked) add("Autorecoil=1");       
+      if (nt2.checked) add("CrosshairLock=1");  
+      if (nt2.checked) add("CenteringAssist=1");  
+      if (nt2.checked) add("AimDriftReduction=1");  
+      if (nt2.checked) add("TargetTrackingSmoothness=1");  
+      if (nt2.checked) add("SnapAssist=1");  
+      if (nt3.checked) add("lightAimMode=enabled");  
+      if (nt3.checked) add("reticleWeight=low");  
+      if (nt3.checked) add("aimDragFriction=minimal");  
+      if (nt3.checked) add("crosshairSmoothing=max");  
+      if (nt3.checked) add("touchToReticleLatency=ultra_low");  
+      if (nt3.checked) add("snapAssistSoftening=true");  
+      if (nt3.checked) add("sensitivityAcceleration=disabled");  
+      if (nt3.checked) add("reticleSpeedStabilizer=active");  
+      if (nt3.checked) add("dragResistanceBypass=true");  
+      if (nt3.checked) add("inputPressureToAimResponse=tuned");  
+      if (nt3.checked) add("scopeInputDampening=reduced");  
+      if (nt3.checked) add("adsFrictionControl=off");  
+      if (nt3.checked) add("screenToScopeSync=locked");  
+      if (nt3.checked) add("gyroscopeDragBalance=enabled");  
+      if (nt3.checked) add("aimFocusInterruptBypass=true");  
+      if (nt3.checked) add("touchAimLagReducer=enabled");  
+      if (nt3.checked) add("stutterRemovalAim=true");  
+      if (nt3.checked) add("trackingInertiaFix=full");  
+      if (nt3.checked) add("inputCurveFlatten=true");  
+      if (nt3.checked) add("aimPullRelaxer=true");  
+      if (nt4.checked) add("touchSensitivity=high");  
+      if (nt4.checked) add("touchSensitivityIncreased=true");  
+      if (nt4.checked) add("gestureSensitivity=0.85");  
+      if (nt4.checked) add("gestureInputSensitivity=medium");  
+      if (nt4.checked) add("touchZoneSensitivity=0.9");  
+      if (nt4.checked) add("tapSensitivityBoost=medium");  
+      if (nt4.checked) add("tapZoneSensitivityBoost=high");  
+      if (nt4.checked) add("tapZoneSensitivityControl=1");  
+      if (nt4.checked) add("tapZoneSensitivityEnhancement=true");  
+      if (nt4.checked)    add("tapZoneSensitivityControlLevel=3");  
+      if (nt4.checked) add("tapZoneSensitivityEnhancementLevel=4");  
+      if (nt5.checked) add("screenBoostEnabled=true");  
+      if (nt5.checked) add("displayEnhancementLevel=ultra");  
+      if (nt5.checked) add("contrastEnhancer=true");  
+      if (nt5.checked) add("sharpnessEnhancement=max");  
+      if (nt5.checked) add("colorSaturationBoost=high");  
+      if (nt5.checked) add("hdrModeForce=true");  
+      if (nt5.checked) add("refreshRateUnlock=true");  
+      if (nt5.checked) add("refreshRateMin=90");  
+      if (nt5.checked) add("refreshRateMax=120");  
+      if (nt5.checked) add("motionBlur=false");  
+      if (nt5.checked) add("screenRenderingPriority=max");  
+      if (nt5.checked) add("touchSamplingRateBoost=true");  
+      if (nt5.checked) add("gammaCurveAdjustment=game_mode");  
+      if (nt5.checked) add("frameResponseSync=enabled");  
+      if (nt5.checked) add("uiAnimationReduce=true");  
+      if (nt5.checked) add("frameDropCompensation=enabled");  
+      if (nt5.checked) add("autoBrightness=false");  
+      if (nt5.checked) add("blackCrushFix=true");  
+      if (nt5.checked) add("panelOverdriveMode=enhanced");  
+      if (nt5.checked) add("gpuColorProcessingBoost=true");  
+      if (nt6.checked) add("touchSensitivityBoost=true");  
+      if (nt6.checked) add("touchLatencyReduction=ultra");  
+      if (nt6.checked) add("tapResponseTime=ultra_fast");  
+      if (nt6.checked) add("touchZonePrecision=high");  
+      if (nt6.checked) add("gestureTrackingAccuracy=enhanced");  
+      if (nt6.checked) add("flickDetectionSpeed=max");  
+      if (nt6.checked) add("dragSmoothnessLevel=high");  
+      if (nt6.checked) add("swipeAcceleration=fast");  
+      if (nt6.checked) add("multiTouchResponseBoost=true");  
+      if (nt6.checked) add("touchPollingRate=240");  
+      if (nt6.checked) add("inputLagFix=true");  
+      if (nt6.checked) add("touchDriverPriority=foreground");  
+      if (nt6.checked) add("screenInputSync=enabled");  
+      if (nt6.checked) add("deadZoneReduction=aggressive");  
+      if (nt6.checked) add("touchEdgeResponse=full");  
+      if (nt6.checked) add("swipeGlideAssistance=enabled");  
+      if (nt6.checked) add("touchFocusMode=dynamic");  
+      if (nt6.checked) add("screenContactTimeFilter=optimized");  
+      if (nt6.checked) add("smartTapRecognition=true");  
+      if (nt6.checked) add("rejectionZoneThreshold=low");  
+      if (nt6.checked) add("touchRefreshAlignment=auto");  
+      
+      if (AML.checked) add("Target Lock=1");  
+      if (AML.checked) add("Autolocking=1");  
+      if (AML.checked) add("Aim Scaling=1");  
+      if (AML.checked) add("Focus Mode=1");  
+      if (AML.checked) add("AutoTrack=1");  
+      if (AML.checked) add("Lock Zones=1");  
+      if (AML.checked) add("Realtimeaim=1");  
+      if (AML.checked) add("Target Snap Speed=1");  
+      if (AML.checked) add("Offset Control=1");  
+      if (AML1.checked) add("SmartAimingActivated=true");  
+      if (AML1.checked) add("AimLockAssistEnabled=true");  
+      if (AML1.checked) add("AutoTargetingSystem=ultra");  
+      if (AML1.checked) add("aimAssistCore=3");  
+      if (AML1.checked) add("aimSnapZoneaimPrediction=2");  
+      if (AML1.checked) add("aimMagnet=3");  
+      if (AML1.checked) add("snapAimAssist=3");  
+      if (AML1.checked) add("targetLockAssist=2");  
+      if (AML1.checked) add("aimLockZoneSize=2");  
+      if (AML1.checked) add("aimAssistLevel=maximum");  
+      if (AML1.checked) add("targetLockRange=far");  
+      if (AML1.checked) add("aimAssistSnap=strong");  
+      if (AML1.checked) add("aimSnapControl=3");  
+      if (AML1.checked) add("aimAssistSnapSensitivity=high");  
+      if (AML1.checked) add("autoAimLock=true");  
+      if (AML1.checked) add("targetLockFocus=hard");  
+      if (AML1.checked) add("aimAssistActivation=true");  
+      if (AML1.checked) add("autoTargetAim=true");  
+      if (AML1.checked) add("autoAimActivation=true");  
+      if (AML1.checked) add("autoAimLockAssist=3");  
+      if (AML1.checked) add("targetLockStrength=3");                 if (AML2.checked) add("adsTrackingBoost=ultra");  
+      if (AML2.checked) add("trackingAssistLevel=3");  
+      if (AML2.checked) add("targetTrackingEnhancer=3");  
+      if (AML2.checked) add("trackingAccuracyBoost=3");  
+      if (AML2.checked) add("targetLeadAssist=high");  
+      if (AML2.checked) add("aimPredictionFactor=2.5");  
+      if (AML2.checked) add("autoAimPredictor=advanced");  
+      if (AML2.checked) add("targetPrioritization=smart");  
+      if (AML2.checked) add("targetLeadCompensation=high");  
+      if (AML2.checked) add("autoTargetSwitch=true");  
+      if (AML2.checked) add("targetLockPriority=3");  
+      if (AML2.checked) add("targetTrackingSensitivity=ultra");  
+      if (AML2.checked) add("targetLeadAssistFactor=3");  
+      if (AML2.checked) add("targetLeadCompensationFactor=3");  
+      if (AML2.checked) add("bulletTrajectoryAssist=true");  
+      if (AML2.checked) add("bulletTrajectoryCorrection=true");  
+      if (AML2.checked) add("bulletTrajectoryCorrectionFactor=2.5");  
+      if (AML2.checked) add("bulletTrajectoryLeadAssist=enabled");  
+      if (AML3.checked) add("smart_aim_compensation=enabled");  
+      if (AML3.checked) add("enemy_posture_detection=head_elevated");  
+      if (AML3.checked) add("adaptive_aim_fov=dynamic");  
+      if (AML3.checked) add("head_occlusion_bypass=moderate");  
+      if (AML3.checked) add("smart_recoil_alignment=true");  
+      if (AML3.checked) add("aim_curve_profile=pro_headshot");  
+      if (AML3.checked) add("reaction_time_override=low_latency");  
+      if (AML3.checked) add("per_pixel_tracking=true");  
+      if (AML3.checked) add("gyro_prediction_multiplier=1.25");  
+      if (AML3.checked) add("head_shake_compensation=enabled");  
+      if (AML3.checked) add("target_depth_estimation=active");  
+      if (AML3.checked) add("sniper_hold_breath_assist=auto");  
+      if (AML3.checked) add("hitbox_prediction_latency_correction=true");  
+      if (AML3.checked) add("assist_fade_distance=long_range");  
+      if (AML3.checked) add("aim_environmental_adapt=true");  
+      if (AML3.checked) add("high_speed_target_tracking=aggressive");  
+      if (AML3.checked) add("headAimAssist in=high");  
+      if (AML3.checked) add("snapToHeadZone=true");  
+      if (AML3.checked) add("headshotZoneMagnet=max");  
+      if (AML3.checked) add("aimCorrectionIntensity=strong");  
+      if (AML3.checked) add("verticalReticleBias=head");  
+      if (AML3.checked) add("aimSnapSpeed=fast");  
+      if (AML3.checked) add("crosshairGlueToHead=true");  
+      if (AML3.checked) add("targetLockFocus=upper_body");  
+      if (AML3.checked) add("dragHeadAssist=enabled");  
+      if (AML3.checked) add("recoilL      iftCounter=auto");  
+      if (AML3.checked) add("adsAutoSnap=head_priority");  
+      if (AML3.checked) add("scopeHeadPullRatio=1.25");  
+      if (AML3.checked) add("targetRegionPredictor=enabled");  
+      if (AML3.checked) add("aimPathCorrection=head_directed");  
+      if (AML3.checked) add("inputCurveAssistZone=head");  
+      if (AML3.checked) add("dynamicAimTrackingZone=skull");  
+      if (AML3.checked) add("headAimBiasStrength=max");  
+      if (AML3.checked) add("reticleLockFrameWindow=extended");  
+      if (AML3.checked) add("gyroHeadFollowAssist=true");        
+      if (AML4.checked) add("recoilCompensationEnabled=true");  
+      if (AML4.checked) add("autoRecoilDamp=high");  
+      if (AML4.checked) add("recoilStabilizationLevel=aggressive");  
+      if (AML4.checked) add("aimDr      iftCorrection=true");  
+      if (AML4.checked) add("bulletSpreadReduction=max");  
+      if (AML4.checked) add("verticalRecoilControl=strong");  
+      if (AML4.checked) add("horizontalRecoilBalancer=enabled");  
+      if (AML4.checked) add("sensitivityRecoilSync=smart");  
+      if (AML4.checked) add("cameraShakeSuppression=true");  
+      if (AML4.checked) add("scopeRecoilFilter=enhanced");  
+      if (AML4.checked) add("sprayPatternPredictor=true");  
+      if (AML4.checked) add("firingStabilityAssist=on");  
+      if (AML4.checked) add("burstRecoilHandler=tuned");  
+      if (AML4.checked) add("aimLockDr      iftLimiter=true");  
+      if (AML4.checked) add("reticleStability=max");  
+      if (AML4.checked) add("touchRecoilLink=synced");  
+      if (AML4.checked) add("recoilTimeWindowCompensation=fast");  
+      if (AML4.checked) add("inputToRecoilLatencyFix=enabled");  
+      if (AML4.checked) add("weaponKickMitigation=true");  
+      if (AML4.checked) add("dynamicRecoilCurveAdjustment=active");  
+      if (AML4.checked) add("shotSequenceMemory=enabled");        
+      if (AML5.checked) add("aimResponseControl=2");
+      if (AML5.checked) add("aimSmoothingEnabled=true");
+      if (AML5.checked) add("aimCorrectionFactor=2");
+      if (AML5.checked) add("dynamicAimAdjustment=true");
+      if (AML5.checked) add("dynamicAimAssist=ultra");
+      if (AML5.checked) add("aimAssistSmoothing=true");
+      if (AML5.checked) add("aimAssistSensitivity=ultra");
+      if (AML5.checked) add("aimAssistFocus=hard");
+      if (AML5.checked) add("aimAssistPrecision=3");
+      if (AML5.checked) add("aimAssistPrecisionBoost=3");
+      if (AML5.checked) add("aimAssistSnapWindow=wide");
+      if (AML5.checked) add("aimAssistSnapSensitivity=high");
+      if (AML5.checked) add("aimAssistWindowSize=wide");
+      if (AML5.checked) add("aimAssistWindow=wide");
+      if (AML5.checked) add("aimAssistStrength=ultra");
+      if (AML5.checked) add("aimAssistStrengthBoost=3");
+      if (AML5.checked) add("aimAssistDeadZone=low");
+      if (AML5.checked) add("aimAssistDeadZoneReduction=high");
+      if (AML5.checked) add("aimAssistDeadZoneBoost=high");
+      if (AML5.checked) add("aimAssistDeadZoneControl=low");
+      if (AML5.checked) add("aimZonePrecision=3");
+      if (AML5.checked) add("aimSnapWindowAdjustment=2");
+      if (AML5.checked) add("aimSnapBoost=high");
+      if (AML5.checked) add("aimSnapSensitivity=high");
+      if (AML5.checked) add("aimSnapControl=3");
+      if (AML5.checked) add("autoAimSmoothness=ultra");
+      if (AML5.checked) add("autoAimCorrection=2");
+      if (AML5.checked) add("autoAimCompensation=3");
+      if (AML5.checked) add("autoAimRangeBoost=2");
+      if (AML5.checked) add("autoAimRange=maximum");
+      if (AML5.checked) add("autoAimFocus=strong");
+      if (AML5.checked) add("autoAimLeadAssist=smart");
+      if (AML5.checked) add("autoAimSnap=fast");
+      if (AML5.checked) add("autoTargetEnhancement=true");
+      if (AML5.checked) add("autoTargetRangeBoost=wide");
+      if (AML5.checked) add("autoTargetPrecision=3");
+      if (AML5.checked) add("autoTargetLead=3");
+      if (AML5.checked) add("autoTargetSnap=true");
+      if (AML5.checked) add("autoTargetAssist=ultra");
+      if (AML5.checked) add("autoTargetCompensation=high");              
+   
+      if (pe.checked) add("cpu_boost_mode=enabled");   
+      if (pe.checked) add("cpu_min_freq=1200MHz"); 
+      if (pe.checked) add("cpu_governor=performance"); 
+      if (pe.checked) add("cpu_core_control=enabled");
+      if (pe.checked) add("cpu_hotplug_threshold=high"); 
+       
+      if (pe1.checked) add("ram_clear_on_launch=true");
+      if (pe1.checked) add("lowmemorykiller_minfree=\"512,1024,2048,4096\"");
+      if (pe1.checked) add("zram_enabled=true");
+      if (pe1.checked) add("texture_memory_boost=enabled");
+      if (pe1.checked) add("cache_readahead_kb=1024");      
+
+      if (pe2.checked) add("gpu_force_mode=performance");
+      if (pe2.checked) add("gpu_min_freq=500MHz");
+      if (pe2.checked) add("vsync_override=off");
+      if (pe2.checked) add("frame_rate_cap=90");
+      if (pe2.checked) add("render_resolution_optimization=true");
+      if (pe2.checked) add("frame_drop_compensation=on");
+      if (pe2.checked) add("screen_refresh_optimization=enabled");
+      if (pe2.checked) add("hdr_mode=auto");     
+
+      if (pe3.checked) add("auto_clear_cache=true");
+      if (pe3.checked) add("storage_trim_threshold=75%");
+      if (pe3.checked) add("file_system_optimize=ext4");
+      if (pe3.checked) add("app_preload_enable=true");     
+      if (pe4.checked) add("aim_response_curve=linear+");
+      if (pe4.checked) add("aim_acceleration=medium_low");
+      if (pe4.checked) add("flick_snap_window=short");
+      if (pe4.checked) add("aim_start_delay=0ms");
+      if (pe4.checked) add("sensitivity_transition_speed=fast");
+      if (pe4.checked) add("stickiness_feel_weight=balanced");
+      if (pe4.checked) add("micro_adjustment_threshold=low");
+      if (pe4.checked) add("smooth_return_to_center=true");
+      if (pe4.checked) add("gyroscope_smoothing=adaptive");
+      if (pe4.checked) add("swipe_friction_curve=custom_sharp");
+      if (pe4.checked) add("dynamic_deceleration_on_target=true");
+      if (pe4.checked) add("tap_scope_response=instant");
+      if (pe4.checked) add("trigger_pull_latency_reduction=true");
+      if (pe4.checked) add("aim_drag_multiplier=1.0");
+      if (pe4.checked) add("aim_bounce_dampening=high");
+      if (pe4.checked) add("adaptive_sensitivity_zone=center_focus");
+      if (pe4.checked) add("focus_zoom_sensitivity_reduction=15%");
+
+      if (pe5.checked) add("abilityResponseBoost=high");
+      if (pe5.checked) add("skillProcessTime=fast");
+      if (pe5.checked) add("effectPriorityLevel=high");
+      if (pe5.checked) add("animationLatencyReduction=true");
+      if (pe5.checked) add("visualEffectSimpl      ify=true");
+      if (pe5.checked) add("impactRenderFastPath=true");
+      if (pe5.checked) add("statusEffectFrameBoost=true");
+      if (pe5.checked) add("actionChainAcceleration=true");
+      if (pe5.checked) add("preloadSkillAssets=true");
+      if (pe5.checked) add("skillTouchInputBoost=high");
+      if (pe5.checked) add("reactionTimeAssist=low_latency");
+      if (pe5.checked) add("freezeFrameSkip=true");     
+       
+      if (m1887.checked) add("m1887_boost=true");
+      if (m1887.checked) add("m1887_fire_delay_reduction=enabled");
+      if (m1887.checked) add("m1887_switch_speed=fast");
+      if (m1887.checked) add("m1887_recoil_control=adaptive");
+      if (m1887.checked) add("m1887_spread_stabilization=true");
+      if (m1887.checked) add("m1887_auto_realign=true");
+      if (m1887.checked) add("m1887_aim_lock=medium");
+      if (m1887.checked) add("m1887_response_priority=fastest");
+      if (m1887.checked) add("m1887_spray_pattern_control=precise");
+      if (m1887.checked) add("m1887_recoil_reset_speed=fast");
+      if (m1887.checked) add("m1887_burst_fire_mode=enabled");
+      if (m1887.checked) add("m1887_burst_fire_interval=short");
+      if (m1887.checked) add("m1887_recoil_compensation=dynamic");
+      if (m1887.checked) add("m1887_horizontal_recoil_balance=medium");
+      if (m1887.checked) add("m1887_vertical_recoil_balance=high");
+      if (m1887.checked) add("m1887_aim_assist_strength=medium");
+      if (m1887.checked) add("m1887_reload_speed_boost=enabled");
+      if (m1887.checked) add("m1887_rapid_switch_enabled=true");
+      if (m1887.checked) add("m1887_input_latency_reduce=true");
+      if (m1887.checked) add("m1887_first_shot_precision=high");
+      if (m1887.checked) add("m1887_pellet_spread_control=maximum");
+      if (m1887.checked) add("m1887_double_shot_precision=enhanced");
+      if (m1887.checked) add("m1887_reload_interrupt_reduction=enabled");
+      if (m1887.checked) add("m1887_shell_ejection_delay=minimal");
+      if (m1887.checked) add("m1887_damage_dropoff_reduce=true");
+      if (m1887.checked) add("m1887_aim_stability_boost=high");
+      
+      if (mp.checked) add("mp40_boost=true");
+      if (mp.checked) add("mp40_recoil_control=high");
+      if (mp.checked) add("mp40_recoil_balance=vertical");
+      if (mp.checked) add("mp40_recoil_reset_speed=fast");
+      if (mp.checked) add("mp40_spread_reduce=0.78");
+      if (mp.checked) add("mp40_spread_randomness=low");
+      if (mp.checked) add("mp40_auto_realign=true");
+      if (mp.checked) add("mp40_fire_rate_boost=enabled");
+      if (mp.checked) add("mp40_stabilizer_mode=smart");
+      if (mp.checked) add("mp40_aim_assist_bias=center_mass");
+      if (mp.checked) add("spray_pattern_control=adaptive");
+      if (mp.checked) add("mp40_response_priority=fastest");
+      if (mp.checked) add("mp40_spray_pattern_control=precision_mode");
+      if (mp.checked) add("mp40_recoil_compensation=dynamic");
+      if (mp.checked) add("mp40_horizontal_recoil_balance=medium");
+      if (mp.checked) add("mp40_vertical_recoil_balance=high");
+      if (mp.checked) add("mp40_recoil_reset_delay=short");
+      if (mp.checked) add("mp40_burst_fire_mode=enabled");
+      if (mp.checked) add("mp40_burst_length=medium");
+      if (mp.checked) add("mp40_input_latency_reduce=true");
+      if (mp.checked) add("mp40_rapid_switch_enabled=true");
+      if (mp.checked) add("mp40_spread_recovery_speed=fast");
+      if (mp.checked) add("mp40_aim_lock=high");
+      if (mp.checked) add("mp40_continuous_fire_stabilizer=enabled");
+      if (mp.checked) add("mp40_movement_accuracy_boost=high");
+      if (mp.checked) add("mp40_sprint_to_fire_delay_reduction=enabled");
+      if (mp.checked) add("mp40_hip_fire_spread_reduce=medium");
+      if (mp.checked) add("mp40_spray_pattern_memory=improved");
+      if (mp.checked) add("mp40_recoil_angle_variation_reduce=true");      
+
+      if (ump.checked) add("ump_boost=true");
+      if (ump.checked) add("ump_recoil_assist=smart_balance");
+      if (ump.checked) add("ump_spread_control=enabled");
+      if (ump.checked) add("ump_spread_reduce=0.75");
+      if (ump.checked) add("ump_vertical_stabilizer=enabled");
+      if (ump.checked) add("ump_horizontal_dr      ift_resist=medium");
+      if (ump.checked) add("ump_auto_realign=true");
+      if (ump.checked) add("ump_response_priority=fast");
+      if (ump.checked) add("ump_spray_pattern_control=adaptive");
+      if (ump.checked) add("ump_recoil_compensation=dynamic");
+      if (ump.checked) add("ump_recoil_reset_speed=fast");
+      if (ump.checked) add("ump_burst_fire_mode=enabled");
+      if (ump.checked) add("ump_burst_length=medium");
+      if (ump.checked) add("ump_input_latency_reduce=true");
+      if (ump.checked) add("ump_rapid_switch_enabled=true");
+      if (ump.checked) add("ump_aim_lock=medium");
+      if (ump.checked) add("ump_aim_assist_strength=medium");
+      if (ump.checked) add("ump_recoil_recovery_speed=fastest");
+      if (ump.checked) add("ump_target_tracking_enhancement=enabled");
+      if (ump.checked) add("ump_movement_penalty_reduction=enabled");
+      if (ump.checked) add("ump_hip_fire_accuracy_boost=medium");
+      if (ump.checked) add("ump_spray_reset_precision=high");
+      if (ump.checked) add("ump_auto_recoil_compensation_sensitivity=adaptive");
+      
+      if (de.checked) add("deagle_boost=true");
+      if (de.checked) add("deagle_recoil_reset_speed=fast");
+      if (de.checked) add("deagle_tap_stabilization=enabled");
+      if (de.checked) add("deagle_first_shot_accuracy=true");
+      if (de.checked) add("deagle_spread_reduce=0.65");
+      if (de.checked) add("deagle_response_priority=fastest");
+      if (de.checked) add("deagle_touch_precision_mode=enabled");
+      if (de.checked) add("deagle_recoil_compensation=dynamic");
+      if (de.checked) add("deagle_burst_fire_mode=enabled");
+      if (de.checked) add("deagle_burst_length=short");
+      if (de.checked) add("deagle_input_latency_reduce=true");
+      if (de.checked) add("deagle_rapid_switch_enabled=true");
+      if (de.checked) add("deagle_aim_lock=high");
+      if (de.checked) add("deagle_aim_assist_strength=high");
+      if (de.checked) add("deagle_crit_damage_boost=enabled");
+      if (de.checked) add("deagle_first_shot_recoil_reset=instant");
+      if (de.checked) add("deagle_aim_down_sight_speed=fastest");
+      if (de.checked) add("deagle_single_shot_stability=maximum");
+      if (de.checked) add("deagle_fire_mode_precision=tap_only");
+      if (de.checked) add("deagle_sway_reduction=maximum");
+      if (de.checked) add("deagle_reload_speed_minimize=true");      
+  
+      if (recoil.checked) add("Suppression=1");  
+      if (recoil.checked) add("Shake Reduction=1");
+      if (recoil.checked) add("Stability Control=1");
+      if (recoil.checked) add("Feedback Modulation=1");
+      if (recoil.checked) add("Balance=1");
+      if (recoil.checked) add("Recoil Reaction Response=1");  
+      if (recoil.checked) add("Recoil Anchor=1");
+      if (recoil.checked) add("Autorecoil=1");
+      if (recoil.checked) add("Stabilizedfiring Rate=1");
+      if (recoil.checked) add("Recoil Reset Options=1");
+      
+      if (recoi1.checked) add("frame_lock_override");  
+      if (recoi1.checked) add("input_queue_optimization=enabled");
+      if (recoi1.checked) add("multi_touch_filtering=basic");
+      if (recoi1.checked) add("gesture_buffer_size=normal");
+      if (recoi1.checked) add("input_event_merge=true");
+      if (recoi1.checked) add("tap_flood_protection=soft_limit");
+      if (recoi1.checked) add("touch_burst_mode=off");
+      
+      if (pe8.checked) add("memory_cache_preload");  
+      if (pe8.checked) add("networkBufferingFix=aggressive");
+      if (pe8.checked) add("serverSyncPriority=high");
+      if (pe8.checked) add("frameSyncMode=low_latency");
+      if (pe8.checked) add("eventQueueFlushRate=fast");
+      if (pe8.checked) add("touchResponseDelay=0");
+      if (pe8.checked) add("renderLatencyReduction=max");
+      if (pe8.checked) add("cpuWakeOnTouch=true");
+      if (pe8.checked) add("gpuRenderAheadLimit=1");
+      if (pe8.checked) add("lowMemoryLagBypass=true");
+      if (pe8.checked) add("transitionEffectDelay=off");
+      if (pe8.checked) add("inputStackOptimization=true");
+      if (pe8.checked) add("systemTaskDefer=enabled");
+      if (pe8.checked) add("drawCallBatching=smart");
+      if (pe8.checked) add("touchProcessingThreadPriority=high");
+      if (pe8.checked) add("inputDriverBoost=true");
+      if (pe8.checked) add("screenEventFlush=instant");
+      if (pe8.checked) add("processSchedulingBoost=enabled");
+      if (pe8.checked) add("powerSchedulerMode=performance");
+      if (pe8.checked) add("thermalDelayBypass=true");      
+      
+      if (anew.checked) add("hardRecoilSuppression=enabled");
+      if (anew.checked) add("maxRecoilClamping=on");
+      if (anew.checked) add("aggressiveVerticalControl=enabled");
+      if (anew.checked) add("fullSprayStabilization=active");
+      if (anew.checked) add("recoilDropBuffering=enabled");
+      if (anew.checked) add("burstKickAbsorption=high");
+      if (anew.checked) add("horizontalRecoilBalancer=strict");
+      if (anew.checked) add("recoilTiltCorrection=enhanced");
+      if (anew.checked) add("sprayAnchorLock=true");
+      if (anew.checked) add("recoilRecoveryMode=fastest");
+      
+      if (abz.checked)
+add("no_recoil=1");
+      if (abz.checked) add("recoil_compensation_level=3");
+      if (abz.checked) add("recoil_curve_smoothing=enabled");
+      if (abz.checked) add("recoil_suppression_mode=enhanced");
+      if (abz.checked) add("gyro_stabilization_factor=0.85");
+      if (abz.checked) add("gyro_response_curve=flat");
+      if (abz.checked) add("micro_jitter_filter=enabled");
+      if (abz.checked) add("aim_assist_stabilizer=aggressive");
+      if (abz.checked) add("dynamic_recoil_adaptation=true");
+      if (abz.checked) add("sensor_fusion_algorithm=v5");
+      if (abz.checked) add("vibration_feedback_suppression=high");
+      if (abz.checked) add("input_prediction_correction=enabled");
+      if (abz.checked) add("horizontal_recoil_bias_compensation=0.12");
+      if (abz.checked) add("vertical_recoil_decay_rate=0.95");
+      if (abz.checked) add("firing_pattern_control=adaptive");
+      if (abz.checked)
+add("auto_recoil_reset=true");
+      if (abz.checked)
+add("micro_recoil_adjust=true");
+      if (abz.checked) add("stabilizer_intensity=medium");
+      if (abz.checked) add("input_smoothing_level=high");
+      if (abz.checked)
+add("tap_jitter_reduction=true");
+      if (abz.checked) add("stabilization_algorithm=v3.1");
+      if (abz.checked) add("camera_stabilization_mode=advanced");
+      if (abz.checked) add("camera_smoothness_level=0.9");
+      if (abz.checked) add("camera_motion_blur_reduction=enabled");
+      if (abz.checked) add("camera_vibration_damping=medium");
+      if (abz.checked) add("camera_gyro_sensitivity=0.75");
+      if (abz.checked) add("camera_inertia_compensation=enabled");
+      if (abz.checked) add("camera_rotation_deadzone=0.05");
+      if (abz.checked) add("camera_aim_lock_smoothness=high");
+      if (abz.checked) add("camera_input_latency_reduction=low");
+      if (abz.checked) add("touch_input_response_curve=linear");
+      if (abz.checked) add("touch_input_deadzone=0.03");
+      if (abz.checked) add("touch_input_sensitivity=1.2");
+      if (abz.checked) add("touch_input_jitter_filter=enabled");
+      
+      if (ahz.checked) add("verticalRecoilControl=strong");
+      if (ahz.checked) add("recoilPullDownAssist=enabled");
+      if (ahz.checked) add("verticalKickReduction=high");
+      if (ahz.checked) add("recoilSnapSpeed=fast");
+      if (ahz.checked) add("aimStabilityZone=downward");
+ 
+      if (abs.checked) add("horizontalRecoilBalancer=adaptive");
+      if (abs.checked) add("leftRightDr      iftLimiter=enabled");
+      if (abs.checked) add("horizontalStabilizationMode=smart");
+      if (abs.checked) add("sideShakeCorrection=high");
+      if (abs.checked) add("aimAnchorCentering=true");
+      
+      if (azh.checked) add("recoilPatternMemory=enabled");
+      if (azh.checked) add("cumulativeRecoilSuppressor=active");
+      if (azh.checked) add("randomSpreadBalancer=smart");
+      if (azh.checked) add("burstKickAbsorption=adaptive");
+      if (azh.checked) add("sprayControlCompensator=on");     
+      
+    const password = "123456"; // 🔐 Mật khẩu cố định, có thể thay đổi tại đây
+    const plaintext = cfg.join("\n");
+    const encrypted = CryptoJS.AES.encrypt(plaintext, password).toString();
+
+    const blob = new Blob([encrypted], { type: 'text/plain' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = "FreeFire.dat";
+    a.click();
+    URL.revokeObjectURL(a.href);
+  }
+  </script>  </body>  
+</html> 
